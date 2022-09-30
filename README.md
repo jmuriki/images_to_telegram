@@ -40,13 +40,41 @@
 Интервал публикаций задаётся в часах. По умолчанию установлен на 4 часа.
 
 Путь с именем файла не является обязательным параметром.
+Будьте внимательны: пока путь прописан и программа запущена, одна и та же публикация будет выходить бесконечно.
 
 
 ## Запуск
 
-`nasa_spacex_images_bot.py`
+### `nasa_spacex_images_bot.py`
 
 Находясь в директории проекта, откройте с помощью python3 файл `nasa_spacex_images_bot.py`
+
+`python3 nasa_spacex_images_bot.py`
+
+
+### `fetch_spacex_images.py`
+
+Находясь в директории проекта, откройте с помощью python3 файл `fetch_spacex_images.py`
+
+`python3 fetch_spacex_images.py`
+
+Если добавить необязательный параметр --id и номер запуска, скрипт скачает его фотографии, а не последние из доступных на сайте.
+
+`python3 fetch_spacex_images.py --id 5eb87d47ffd86e000604b38a`
+
+
+### `fetch_nasa_apod_images.py`
+
+Находясь в директории проекта, откройте с помощью python3 файл `fetch_nasa_apod_images.py`
+
+`python3 fetch_nasa_apod_images.py`
+
+
+### `fetch_nasa_epic_images.py`
+
+Находясь в директории проекта, откройте с помощью python3 файл `fetch_nasa_epic_images.py`
+
+`python3 fetch_nasa_epic_images.py`
 
 
 ## Цель проекта
