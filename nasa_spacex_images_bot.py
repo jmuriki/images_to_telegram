@@ -32,7 +32,9 @@ def main():
 		fetch_spacex_images.main()
 		fetch_nasa_apod_images.main()
 		fetch_nasa_epic_images.main()
-		directories = ['./images', './images/space_x', './images/nasa_apod', './images/nasa_epic']
+		directories = []
+		for step in os.walk('./images/'):
+			directories.append(step[0])
 		for directory in directories:
 			for image_name in os.listdir(directory):
 				image_path = os.path.join(directory, image_name)
