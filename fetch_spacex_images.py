@@ -47,7 +47,10 @@ def main():
 	images_folder_name = 'images'
 	Path(f"./{images_folder_name}").mkdir(parents=True, exist_ok=True)
 	flight_id = create_parser().parse_args().id
-	fetch_spacex_images(images_folder_name, flight_id)
+	if flight_id:
+		fetch_spacex_images(images_folder_name, flight_id)
+	else:
+		fetch_spacex_images(images_folder_name)
 
 
 if __name__ == "__main__":
