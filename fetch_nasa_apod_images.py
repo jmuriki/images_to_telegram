@@ -3,36 +3,35 @@ import requests
 import json
 import datetime
 
-from pathlib import Path
 from dotenv import load_dotenv
 
-from get_extention_from_url import get_extention
+from multifunctional_module import create_folder_safely
+from multifunctional_module import get_response
+from multifunctional_module import get_extention_from_url
+from multifunctional_module import compose_filename
+from multifunctional_module import download_content
+from multifunctional_module import save_content
 
 
-def fetch_nasa_apod_images(folder):
-	api_key = os.environ['NASA_API_KEY']
-	nasa_folder_name = "nasa_apod"
+def fetch_nasa_apod_images(api_key, main_images_folder):
+	nasa_apod_folder = create_folder_safely(main_images_folder, "nasa_apod")
 	api_url = "https://api.nasa.gov/planetary/apod"
 	start_date = datetime.date.today()
+	api_param = ["api_key", api_key]
 	while True:
 		try:
-			date_formatted = start_date.strftime("%Y-%m-%d")
-			params = {
-				"api_key": api_key,
-				"start_date": date_formatted,
-			}
-			api_response = requests.get(api_url, params=params)
-			api_response.raise_for_status()
-			Path(f"./{folder}/{nasa_folder_name}/").mkdir(parents=True, exist_ok=True)
-			for apod in api_response.json():
-				apod_url = apod.get('hdurl')
+			start_date_formatted = start_date.strftime("%Y-%m-%d")
+			start_date_param = ["start_date", start_date_formatted]
+			api_response = get_response(api_url, api_param, start_date_param).json()
+			image_id = 0
+			for apod in api_response:
+				apod_url = apod.get("hdurl")
 				if apod_url:
-					response = requests.get(apod_url)
-					response.raise_for_status()
-					extention = get_extention(apod_url)
-					filename = f"nasa_apod_{apod['date']}{extention}"
-					with open(f"./{folder}/{nasa_folder_name}/{filename}", "wb") as file:
-						file.write(response.content)
+					extention = get_extention_from_url(apod_url)
+					filename = compose_filename(nasa_apod_folder, apod["date"], image_id, extention)
+					content = download_content(apod_url)
+					save_content(main_images_folder, filename, content, nasa_apod_folder)
+					image_id += 1
 				else:
 					continue
 			break
@@ -42,9 +41,9 @@ def fetch_nasa_apod_images(folder):
 
 def main():
 	load_dotenv()
-	images_folder_name = 'images'
-	Path(f"./{images_folder_name}").mkdir(parents=True, exist_ok=True)
-	fetch_nasa_apod_images(images_folder_name)
+	api_key = os.environ["NASA_API_KEY"]
+	main_images_folder = create_folder_safely()
+	fetch_nasa_apod_images(api_key, main_images_folder)
 
 
 if __name__ == "__main__":

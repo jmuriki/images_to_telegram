@@ -8,11 +8,15 @@
 Должен быть установлен python3.
 Затем используйте pip (или pip3, если есть конфликт с python2) для установки зависимостей:
 
-`pip install -r requirements.txt`
+```
+pip install -r requirements.txt
+```
 
 или
 
-`pip3 install -r requirements.txt`
+```
+pip3 install -r requirements.txt
+```
 
 Рекомендуется использовать virtualenv / venv для изоляции проекта.
 
@@ -21,15 +25,13 @@
 
 Сохраните ключи/токены/параметры в `.env` файл в директорию проекта в следующем формате:
 
-`NASA_API_KEY=вместо этого текста вставьте ключ`
-
-`TELEGRAM_TOKEN=вместо этого текста вставьте токен`
-
-`CHAT_ID=@вместо этого текста вставьте имя канала`
-
-`PUBLICATION_INTERVAL=вместо этого текста вставьте число`
-
-`IMAGE_PATH=вместо этого текста вставьте путь с именем файла для следующей публикации`
+```
+NASA_API_KEY=вместо этого текста вставьте ключ
+TELEGRAM_TOKEN=вместо этого текста вставьте токен
+CHAT_ID=@вместо этого текста вставьте @имя канала
+PUBLICATION_INTERVAL=вместо этого текста вставьте число
+IMAGE_PATH=вместо этого текста вставьте путь с именем файла для следующей публикации
+```
 
 Для получения API ключа NASA зарегистрируйтесь на https://api.nasa.gov .
 
@@ -45,36 +47,51 @@
 
 ## Запуск
 
-### `nasa_spacex_images_bot.py`
+### nasa_spacex_images_bot.py
 
 Находясь в директории проекта, откройте с помощью python3 файл `nasa_spacex_images_bot.py`
 
-`python3 nasa_spacex_images_bot.py`
+```
+python3 nasa_spacex_images_bot.py
+```
 
 
-### `fetch_spacex_images.py`
+### fetch_spacex_images.py
 
 Находясь в директории проекта, откройте с помощью python3 файл `fetch_spacex_images.py`
 
-`python3 fetch_spacex_images.py`
+```
+python3 fetch_spacex_images.py
+```
 
 Если добавить необязательный параметр --id и номер запуска, скрипт скачает его фотографии, а не последние из доступных на сайте.
 
-`python3 fetch_spacex_images.py --id 5eb87d47ffd86e000604b38a`
+```
+python3 fetch_spacex_images.py --id 5eb87d47ffd86e000604b38a
+```
 
 
-### `fetch_nasa_apod_images.py`
+### fetch_nasa_apod_images.py
 
 Находясь в директории проекта, откройте с помощью python3 файл `fetch_nasa_apod_images.py`
 
-`python3 fetch_nasa_apod_images.py`
+```
+python3 fetch_nasa_apod_images.py
+```
 
 
-### `fetch_nasa_epic_images.py`
+### fetch_nasa_epic_images.py
 
 Находясь в директории проекта, откройте с помощью python3 файл `fetch_nasa_epic_images.py`
 
-`python3 fetch_nasa_epic_images.py`
+```
+python3 fetch_nasa_epic_images.py
+```
+
+### multifunctional_module.py
+
+Данный модуль содержить функции, необходимые для работы вышеперечисленных скриптов.
+
 
 
 ## Цель проекта

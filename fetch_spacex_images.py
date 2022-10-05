@@ -2,55 +2,59 @@ import requests
 import json
 import argparse
 
-from pathlib import Path
+from multifunctional_module import create_parser
+from multifunctional_module import create_folder_safely
+from multifunctional_module import get_response
+from multifunctional_module import get_extention_from_url
+from multifunctional_module import compose_filename
+from multifunctional_module import download_content
+from multifunctional_module import save_content
 
-from get_extention_from_url import get_extention
+
+def get_spasex_images_links(api_response, last_launch, flight_id=""):
+	if flight_id:
+		links = api_response["links"]["flickr"]["original"]
+	else:
+		links = api_response[last_launch]["links"]["flickr"]["original"]
+	return links
 
 
-def fetch_spacex_images(folder, flight_id=""):
-	space_x_folder_name = "space_x"
+def get_spasex_images_date(api_response, last_launch, flight_id=""):
+	if flight_id:
+		date = api_response["date_local"][:10]
+	else:
+		date = api_response[last_launch]["date_local"][:10]
+	return date
+
+
+def fetch_spacex_images(main_images_folder, flight_id=""):
+	space_x_folder = create_folder_safely(main_images_folder, "space_x")
 	api_url = f"https://api.spacexdata.com/v5/launches/{flight_id}"
-	api_response = requests.get(api_url)
-	api_response.raise_for_status()
+	api_response = get_response(api_url).json()
 	last_launch = -1
 	while True:
-		if flight_id:
-			links = api_response.json()['links']['flickr']['original']
-			date = api_response.json()['date_local'][:10]
-		else:
-			links = api_response.json()[last_launch]['links']['flickr']['original']
-			date = api_response.json()[last_launch]['date_local'][:10]
-		if links:
-			Path(f"./{folder}/{space_x_folder_name}/").mkdir(parents=True, exist_ok=True)
-			for link_number, link in enumerate(links):
-				response = requests.get(link)
-				response.raise_for_status()
-				extention = get_extention(link)
-				filename = f'space_x_{date}_{link_number}{extention}'
-				with open(f"./{folder}/{space_x_folder_name}/{filename}", "wb") as file:
-					file.write(response.content)
+		links = get_spasex_images_links(api_response, last_launch, flight_id)
+		date = get_spasex_images_date(api_response, last_launch, flight_id)
+		if not links and flight_id:
 			break
+		elif not links:
+			last_launch -= 1
 		else:
-			if flight_id:
-				break
-			else:
-				last_launch -= 1
-			
-
-def create_parser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument ('--id')
-    return parser
+			for link_number, link in enumerate(links):
+				extention = get_extention_from_url(link)
+				filename = compose_filename(space_x_folder, date, link_number, extention)
+				content = download_content(link)
+				save_content(main_images_folder, filename, content, space_x_folder)
+			break
 
 
 def main():
-	images_folder_name = 'images'
-	Path(f"./{images_folder_name}").mkdir(parents=True, exist_ok=True)
-	flight_id = create_parser().parse_args().id
+	main_images_folder = create_folder_safely()
+	flight_id = create_parser("--id").parse_args().id
 	if flight_id:
-		fetch_spacex_images(images_folder_name, flight_id)
+		fetch_spacex_images(main_images_folder, flight_id)
 	else:
-		fetch_spacex_images(images_folder_name)
+		fetch_spacex_images(main_images_folder)
 
 
 if __name__ == "__main__":

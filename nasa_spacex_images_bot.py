@@ -2,52 +2,68 @@ import os
 import time
 import telegram
 import random
-import fetch_spacex_images
-import fetch_nasa_apod_images
-import fetch_nasa_epic_images
+import requests
 
 from dotenv import load_dotenv
+from pathlib import Path
+
+from multifunctional_module import scout_directories
+from multifunctional_module import create_folder_safely
+from multifunctional_module import check_for_system_files
 
 
-def publish_content(image_path, text='Поехали!'):
-	token = os.environ['TELEGRAM_TOKEN']
-	chat_id = os.environ['CHAT_ID']
-	publication_interval = os.environ['PUBLICATION_INTERVAL']
-	bot = telegram.Bot(token=token)
-	if not publication_interval:
-		publication_interval = 3600 * 4
+def define_publication_interval(interval_hours):
+	if interval_hours:
+		return int(interval_hours * 3600)
 	else:
-		publication_interval = int(3600 * publication_interval)
-	bot.send_message(text=text, chat_id=chat_id)
-	bot.send_document(document=open(image_path, 'rb'), chat_id=chat_id)
-	time.sleep(publication_interval)
+		return 4 * 3600
 
+
+def get_next_image_path(directories, published_images_paths):
+	for directory in directories:
+		for name in os.listdir(directory):
+			path = os.path.join(directory, name)
+			system_file_found = check_for_system_files(path)
+			if os.path.isfile(path) and not system_file_found:
+				if path not in published_images_paths:
+					return path
+	return random.choice(published_images_paths)
+
+
+def publish_content(token, chat_id, path, message='Поехали!'):
+	with open(Path(f"{path}"), "rb") as file:
+		document = file.read()
+	connection_error = 0
+	while True:
+		if connection_error > 1:
+			time.sleep(60)
+		try:
+			bot = telegram.Bot(token=token)
+			bot.send_message(chat_id=chat_id, text=message)
+			bot.send_document(document=document, chat_id=chat_id)
+			return path
+		except telegram.error.NetworkError:
+			connection_error += 1
 
 
 def main():
 	load_dotenv()
-	priority_image_path = os.environ['IMAGE_PATH']
-	published_content = []
+	token = os.environ['TELEGRAM_TOKEN']
+	chat_id = os.environ['TELEGRAM_CHAT_ID']
+	priority_image_path = os.environ['PRIORITY_IMAGE_PATH']
+	interval_hours = os.environ['PUBLICATION_INTERVAL']
+	main_images_folder = create_folder_safely()
+	published_images_paths = []
 	while True:
-		fetch_spacex_images.main()
-		fetch_nasa_apod_images.main()
-		fetch_nasa_epic_images.main()
-		directories = []
-		for step in os.walk('./images/'):
-			directories.append(step[0])
-		for directory in directories:
-			for image_name in os.listdir(directory):
-				image_path = os.path.join(directory, image_name)
-				if os.path.isfile(image_path):
-					if priority_image_path:
-						published_content.append(priority_image_path)
-						publish_content(priority_image_path)
-					elif image_path in published_content:
-						image_path = random.choice(published_content)
-						publish_content(image_path)
-					else:
-						published_content.append(image_path)
-						publish_content(image_path)
+		directories = scout_directories(main_images_folder)
+		if priority_image_path:
+			next_image_path = priority_image_path
+		else:
+			next_image_path = get_next_image_path(directories, published_images_paths)
+		published_image_path = publish_content(token, chat_id, next_image_path)
+		published_images_paths.append(published_image_path)
+		duration_sec = define_publication_interval(interval_hours)
+		time.sleep(duration_sec)
 
 
 if __name__ == "__main__":
