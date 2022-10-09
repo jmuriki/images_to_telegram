@@ -52,21 +52,6 @@ def compose_filename(folder_name, date, index, extention):
 	return f"{folder_name}_{date}_{index + 1}{extention}"
 
 
-def download_content(url, api_param=""):
-	if api_param:
-		return get_response(url, api_param).content
-	else:
-		return get_response(url).content
-
-
 def save_content(main_folder, filename, content, secondary_folder=""):
 	with open(Path(f"./{main_folder}/{secondary_folder}/{filename}"), "wb") as file:
 		file.write(content)
-
-
-def main():
-	pass
-
-
-if __name__ == "__main__":
-	main()

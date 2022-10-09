@@ -7,7 +7,6 @@ from multifunctional_module import create_folder_safely
 from multifunctional_module import get_response
 from multifunctional_module import get_extention_from_url
 from multifunctional_module import compose_filename
-from multifunctional_module import download_content
 from multifunctional_module import save_content
 
 
@@ -27,7 +26,7 @@ def get_spasex_images_date(api_response, last_launch, flight_id=""):
 	return date
 
 
-def fetch_spacex_images(main_images_folder, flight_id=""):
+def fetch_spacex_images(main_images_folder, flight_id):
 	space_x_folder = create_folder_safely(main_images_folder, "space_x")
 	api_url = f"https://api.spacexdata.com/v5/launches/{flight_id}"
 	api_response = get_response(api_url).json()
@@ -43,18 +42,15 @@ def fetch_spacex_images(main_images_folder, flight_id=""):
 			for link_number, link in enumerate(links):
 				extention = get_extention_from_url(link)
 				filename = compose_filename(space_x_folder, date, link_number, extention)
-				content = download_content(link)
+				content = get_response(link).content
 				save_content(main_images_folder, filename, content, space_x_folder)
 			break
 
 
 def main():
 	main_images_folder = create_folder_safely()
-	flight_id = create_parser("--id").parse_args().id
-	if flight_id:
-		fetch_spacex_images(main_images_folder, flight_id)
-	else:
-		fetch_spacex_images(main_images_folder)
+	flight_id = create_parser("--id").parse_args(["--id", ""]).id
+	fetch_spacex_images(main_images_folder, flight_id)
 
 
 if __name__ == "__main__":
