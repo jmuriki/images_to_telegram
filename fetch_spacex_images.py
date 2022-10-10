@@ -2,12 +2,22 @@ import requests
 import json
 import argparse
 
-from multifunctional_module import create_parser
 from multifunctional_module import create_folder_safely
-from multifunctional_module import get_response
 from multifunctional_module import get_extention_from_url
 from multifunctional_module import compose_filename
 from multifunctional_module import save_content
+
+
+def get_response(url):
+	response = requests.get(url)
+	response.raise_for_status()
+	return response
+
+
+def create_parser(argument_name):
+    parser = argparse.ArgumentParser()
+    parser.add_argument(argument_name)
+    return parser
 
 
 def get_spasex_images_links(api_response, last_launch, flight_id=""):

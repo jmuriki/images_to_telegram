@@ -1,15 +1,8 @@
 import os
-import requests
-import argparse
 
 from pathlib import Path
 from urllib.parse import urlparse
 from urllib.parse import unquote
-
-
-def check_for_system_files(path):
-	system_files_extentions = [".DS_Store"]
-	return any(extention in path for extention in system_files_extentions)
 
 
 def scout_directories(folder_name=""):
@@ -19,25 +12,9 @@ def scout_directories(folder_name=""):
 	return directories
 
 
-def create_parser(argument_name):
-    parser = argparse.ArgumentParser()
-    parser.add_argument(argument_name)
-    return parser
-
-
 def create_folder_safely(directory=".", folder_name="images"):
 	Path(f"{directory}/{folder_name}").mkdir(parents=True, exist_ok=True)
 	return folder_name
-
-
-def get_response(url, *args):
-	params = {}
-	if args:
-		for arg in args:
-			params[arg[0]] = arg[1]
-	response = requests.get(url, params=params)
-	response.raise_for_status()
-	return response
 
 
 def get_extention_from_url(url):

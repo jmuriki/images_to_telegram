@@ -5,9 +5,14 @@ import json
 from dotenv import load_dotenv
 
 from multifunctional_module import create_folder_safely
-from multifunctional_module import get_response
 from multifunctional_module import compose_filename
 from multifunctional_module import save_content
+
+
+def get_response(url, params):
+	response = requests.get(url, params=params)
+	response.raise_for_status()
+	return response
 
 
 def get_dates(api_param):
@@ -45,7 +50,7 @@ def fetch_nasa_epic(api_param, main_images_folder):
 def main():
 	load_dotenv()
 	api_key = os.environ["NASA_API_KEY"]
-	api_param = ["api_key", api_key]
+	api_param = {"api_key": api_key}
 	main_images_folder = create_folder_safely()
 	fetch_nasa_epic(api_param, main_images_folder)
 

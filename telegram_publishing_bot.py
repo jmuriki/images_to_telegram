@@ -9,11 +9,15 @@ from pathlib import Path
 
 from multifunctional_module import scout_directories
 from multifunctional_module import create_folder_safely
-from multifunctional_module import check_for_system_files
 
 
-def define_publication_interval(interval_hours):
-	if interval_hours:
+def check_for_system_files(path):
+	system_files_extentions = [".DS_Store"]
+	return any(extention in path for extention in system_files_extentions)
+
+
+def define_publication_interval(interval_hours=None):
+	if interval_hours is not None:
 		return int(interval_hours * 3600)
 	else:
 		return 4 * 3600
@@ -33,36 +37,36 @@ def get_next_image_path(directories, published_images_paths):
 def publish_content(token, chat_id, path, message='Поехали!'):
 	with open(Path(f"{path}"), "rb") as file:
 		document = file.read()
-	connection_error = 0
+	time_sleep = 0
 	while True:
-		if connection_error > 1:
-			time.sleep(60)
 		try:
 			bot = telegram.Bot(token=token)
 			bot.send_message(chat_id=chat_id, text=message)
 			bot.send_document(document=document, chat_id=chat_id)
 			return path
 		except telegram.error.NetworkError:
-			connection_error += 1
+			time.sleep(time_sleep)
+			time_sleep += 1
 
 
 def main():
 	load_dotenv()
 	token = os.environ['TELEGRAM_TOKEN']
 	chat_id = os.environ['TELEGRAM_CHAT_ID']
-	priority_image_path = os.environ['PRIORITY_IMAGE_PATH']
-	interval_hours = os.environ['PUBLICATION_INTERVAL']
 	main_images_folder = create_folder_safely()
 	published_images_paths = []
 	while True:
 		directories = scout_directories(main_images_folder)
-		if priority_image_path:
-			next_image_path = priority_image_path
-		else:
+		try:
+			next_image_path = os.environ['PRIORITY_IMAGE_PATH']
+		except KeyError:
 			next_image_path = get_next_image_path(directories, published_images_paths)
 		published_image_path = publish_content(token, chat_id, next_image_path)
 		published_images_paths.append(published_image_path)
-		duration_sec = define_publication_interval(interval_hours)
+		try:
+			duration_sec = define_publication_interval(os.environ['PRIORITY_IMAGE_PATH'])
+		except KeyError:
+			duration_sec = define_publication_interval()
 		time.sleep(duration_sec)
 
 
