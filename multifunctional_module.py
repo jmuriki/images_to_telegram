@@ -1,4 +1,5 @@
 import os
+import requests
 
 from pathlib import Path
 from urllib.parse import urlparse
@@ -17,18 +18,19 @@ def create_folder_safely(directory=".", folder_name="images"):
 	return folder_name
 
 
-def get_extention_from_url(url):
+def compose_filepath(url, main_folder, date, secondary_folder="", index=""):
 	url_part = urlparse(url).path
 	unquoted_url_part = unquote(url_part)
 	filename = os.path.split(unquoted_url_part)[-1]
 	extention = os.path.splitext(filename)[-1]
-	return extention
+	if index or index == 0:
+		index = f"_{index + 1}"
+	filename = f"{secondary_folder}_{date}{index}{extention}"
+	return f"./{main_folder}/{secondary_folder}/{filename}"
 
 
-def compose_filename(folder_name, date, index, extention):
-	return f"{folder_name}_{date}_{index + 1}{extention}"
-
-
-def save_content(main_folder, filename, content, secondary_folder=""):
-	with open(Path(f"./{main_folder}/{secondary_folder}/{filename}"), "wb") as file:
-		file.write(content)
+def save_content(url, path, params=None):
+	response = requests.get(url, params)
+	response.raise_for_status()
+	with open(Path(f"{path}"), "wb") as file:
+		file.write(response.content)

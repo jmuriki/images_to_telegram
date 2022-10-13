@@ -5,54 +5,56 @@ import json
 from dotenv import load_dotenv
 
 from multifunctional_module import create_folder_safely
-from multifunctional_module import compose_filename
+from multifunctional_module import compose_filepath
 from multifunctional_module import save_content
 
 
-def get_response(url, params):
-	response = requests.get(url, params=params)
-	response.raise_for_status()
-	return response
-
-
 def get_dates(api_param):
-	all_epic_actual_dates_url = "https://api.nasa.gov/EPIC/api/natural/all"
-	all_actual_dates = get_response(all_epic_actual_dates_url, api_param).json()
-	last_actual_date = all_actual_dates[0]["date"]
-	last_actual_date_formatted = last_actual_date.replace("-","/")
-	return last_actual_date, last_actual_date_formatted
+	url = "https://api.nasa.gov/EPIC/api/natural/all"
+	response = requests.get(url, api_param)
+	response.raise_for_status()
+	actual_dates = response.json()
+	date = actual_dates[0]["date"]
+	date_formatted = date.replace("-","/")
+	return date, date_formatted
 
 
-def get_last_archive(last_actual_date_url, api_param):
-	last_actual_date_url = f"https://api.nasa.gov/EPIC/api/natural/date/{last_actual_date_url}"
-	last_archive = get_response(last_actual_date_url, api_param).json()
-	return last_archive
+def get_archive(date, api_param):
+	url = f"https://api.nasa.gov/EPIC/api/natural/date/{date}"
+	response = requests.get(url, api_param)
+	response.raise_for_status()
+	archive = response.json()
+	return archive
 
 
-def get_epic_image_url(date_formatted, image_name, extention):
-	epic_archive_url = "https://api.nasa.gov/EPIC/archive/natural/"
-	epic_image_url = f"{epic_archive_url}{date_formatted}/png/{image_name}{extention}"
-	return epic_image_url
+def get_epic_url(date_formatted, image_name):
+	url = "https://api.nasa.gov/EPIC/archive/natural/"
+	epic_url = f"{url}{date_formatted}/png/{image_name}.png"
+	return epic_url
 
 
-def fetch_nasa_epic(api_param, main_images_folder):
-	nasa_epic_folder = create_folder_safely(main_images_folder, "nasa_epic")
+def fetch_images(api_param, main_folder):
+	secondary_folder = create_folder_safely(main_folder, "nasa_epic")
 	date, date_formatted = get_dates(api_param)
-	archive = get_last_archive(date, api_param)
-	extention = ".png"
-	for epic_index, epic in enumerate(archive):
-		url = get_epic_image_url(date_formatted, epic['image'], extention)
-		filename = compose_filename(nasa_epic_folder, date, epic_index, extention)
-		content = get_response(url, api_param).content
-		save_content(main_images_folder, filename, content, nasa_epic_folder)
+	archive = get_archive(date, api_param)
+	for index, epic in enumerate(archive):
+		epic_url = get_epic_url(date_formatted, epic['image'])
+		filepath = compose_filepath(
+			epic_url,
+			main_folder,
+			date,
+			secondary_folder,
+			index
+		)
+		save_content(epic_url, filepath, api_param)
 
 
 def main():
 	load_dotenv()
 	api_key = os.environ["NASA_API_KEY"]
 	api_param = {"api_key": api_key}
-	main_images_folder = create_folder_safely()
-	fetch_nasa_epic(api_param, main_images_folder)
+	main_folder = create_folder_safely()
+	fetch_images(api_param, main_folder)
 
 
 if __name__ == "__main__":
