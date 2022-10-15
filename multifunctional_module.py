@@ -23,8 +23,8 @@ def compose_filepath(url, main_folder, date, secondary_folder="", index=""):
 	unquoted_url_part = unquote(url_part)
 	filename = os.path.split(unquoted_url_part)[-1]
 	extention = os.path.splitext(filename)[-1]
-	if index or index == 0:
-		index = f"_{index + 1}"
+	if index:
+		index = f"_{index}"
 	filename = f"{secondary_folder}_{date}{index}{extention}"
 	return f"./{main_folder}/{secondary_folder}/{filename}"
 

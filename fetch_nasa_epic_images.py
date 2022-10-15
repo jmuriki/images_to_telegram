@@ -37,7 +37,7 @@ def fetch_images(api_param, main_folder):
 	secondary_folder = create_folder_safely(main_folder, "nasa_epic")
 	date, date_formatted = get_dates(api_param)
 	archive = get_archive(date, api_param)
-	for index, epic in enumerate(archive):
+	for index, epic in enumerate(archive, start=1):
 		epic_url = get_epic_url(date_formatted, epic['image'])
 		filepath = compose_filepath(
 			epic_url,
