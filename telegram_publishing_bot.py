@@ -53,6 +53,10 @@ def main():
 	load_dotenv()
 	token = os.environ['TELEGRAM_TOKEN']
 	chat_id = os.environ['TELEGRAM_CHAT_ID']
+	try:
+		duration_sec = define_publication_interval(os.environ['PRIORITY_IMAGE_PATH'])
+	except KeyError:
+		duration_sec = define_publication_interval()
 	main_images_folder = create_folder_safely()
 	published_images_paths = []
 	while True:
@@ -63,10 +67,6 @@ def main():
 			next_image_path = get_next_image_path(directories, published_images_paths)
 		published_image_path = publish_content(token, chat_id, next_image_path)
 		published_images_paths.append(published_image_path)
-		try:
-			duration_sec = define_publication_interval(os.environ['PRIORITY_IMAGE_PATH'])
-		except KeyError:
-			duration_sec = define_publication_interval()
 		time.sleep(duration_sec)
 
 
