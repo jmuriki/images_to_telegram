@@ -38,7 +38,7 @@ def fetch_images(api_param, main_folder):
 	date, date_formatted = get_dates(api_param)
 	archive = get_archive(date, api_param)
 	for index, epic in enumerate(archive, start=1):
-		epic_url = get_epic_url(date_formatted, epic['image'])
+		epic_url = get_epic_url(date_formatted, epic["image"])
 		filepath = compose_filepath(
 			epic_url,
 			main_folder,
