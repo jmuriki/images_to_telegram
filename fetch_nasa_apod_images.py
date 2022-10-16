@@ -11,27 +11,25 @@ from multifunctional_module import compose_filepath
 from multifunctional_module import save_content
 
 
-def get_api_response(api_key, start_date):
+def get_apod_response(api_key, start_date):
 	url = "https://api.nasa.gov/planetary/apod"
 	start_date_formatted = start_date.strftime("%Y-%m-%d")
 	params = {
-			"api_key": api_key,
-			"start_date": start_date_formatted
-		}
+		"api_key": api_key,
+		"start_date": start_date_formatted
+	}
 	response = requests.get(url, params)
 	response.raise_for_status()
 	return response
 
 
 def get_archive(api_key):
-	time_sleep = 0
 	for day in range(365):
 		start_date = datetime.date.today() - datetime.timedelta(days=day)
 		try:
-			archive = get_api_response(api_key, start_date).json()
+			archive = get_apod_response(api_key, start_date).json()
 		except requests.exceptions.HTTPError:
-			time.sleep(time_sleep)
-			time_sleep += 1
+			time.sleep(1)
 		return archive
 
 
