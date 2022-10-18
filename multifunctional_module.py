@@ -38,13 +38,10 @@ def find_system_files(path):
 
 def get_paths(folder):
 	paths = []
-	directories = []
-	for direction in os.walk(Path(f"./{folder}")):
-		directories.append(direction[0])
-	for directory in directories:
-		for name in os.listdir(directory):
-			path = os.path.join(directory, name)
-			if os.path.isfile(path) and not find_system_files(path):
+	for root, _, files in os.walk(Path(f"./{folder}")):
+		for name in files:
+			path = os.path.join(root, name)
+			if not find_system_files(path):
 				paths.append(path)
 	return paths
 
