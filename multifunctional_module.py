@@ -55,7 +55,7 @@ def save_content(url, path, params=None):
 
 def publish_content(token, chat_id, path, message="Поехали!"):
 	try:
-		with open(Path(f"{path}"), "rb") as file:
+		with open(Path(path), "rb") as file:
 			document = file.read()
 	except FileNotFoundError:
 		print(path)
