@@ -9,21 +9,19 @@ from multifunctional_module import get_paths
 from multifunctional_module import publish_content
 
 
-def define_publication_interval(interval_hours=None):
-	if interval_hours is None:
+def define_publication_interval(interval_hours):
+	if not interval_hours:
 		return 4 * 3600
 	else:
-		return int(interval_hours * 3600)
+		return int(float(interval_hours) * 3600)
 
 
 def main():
 	load_dotenv()
 	token = os.environ["TELEGRAM_TOKEN"]
 	chat_id = os.environ["TELEGRAM_CHAT_ID"]
-	try:
-		duration_sec = define_publication_interval(os.environ["PUBLICATION_INTERVAL"])
-	except KeyError:
-		duration_sec = define_publication_interval()
+	interval = os.getenv("PUBLICATION_INTERVAL", default="")
+	duration_sec = define_publication_interval(interval)
 	images_folder = create_folder_safely()
 	paths = get_paths(images_folder)
 	while paths:
