@@ -2,10 +2,17 @@ import os
 import time
 import requests
 import telegram
+import argparse
 
 from pathlib import Path
 from urllib.parse import urlparse
 from urllib.parse import unquote
+
+
+def create_parser(argument_name):
+    parser = argparse.ArgumentParser()
+    parser.add_argument(argument_name, default="")
+    return parser
 
 
 def create_folder_safely(directory=".", folder_name="images"):

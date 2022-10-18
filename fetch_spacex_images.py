@@ -2,15 +2,10 @@ import requests
 import json
 import argparse
 
+from multifunctional_module import create_parser
 from multifunctional_module import create_folder_safely
 from multifunctional_module import compose_filepath
 from multifunctional_module import save_content
-
-
-def create_parser(argument_name):
-    parser = argparse.ArgumentParser()
-    parser.add_argument(argument_name, default="")
-    return parser
 
 
 def get_spacex_response(flight_id):
