@@ -28,9 +28,9 @@ def get_archive(api_key):
 		start_date = datetime.date.today() - datetime.timedelta(days=day)
 		try:
 			archive = get_apod_response(api_key, start_date).json()
+			return archive
 		except requests.exceptions.HTTPError:
 			time.sleep(1)
-		return archive
 
 
 def fetch_images(archive, main_folder):
