@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 
 from multifunctional_module import create_parser
 from multifunctional_module import create_folder_safely
-from multifunctional_module import get_paths
+from multifunctional_module import get_files_paths
+from multifunctional_module import find_system_files
 from multifunctional_module import publish_content
 
 
@@ -15,13 +16,13 @@ def main():
 	chat_id = os.environ["TELEGRAM_CHAT_ID"]
 	path = create_parser("--path").parse_args().path
 	images_folder = create_folder_safely()
-	paths = get_paths(images_folder)
-	if not path and not paths:
-		print("Изображений не найдено.")
-	elif not path and paths:
+	paths = [path for path in get_files_paths(images_folder) if not find_system_files(path)]
+	if not path and paths:
 		path = random.choice(paths)
-	if path:
+	try:
 		publish_content(token, chat_id, path)
+	except IsADirectoryError:
+		return
 
 if __name__ == "__main__":
 	main()
