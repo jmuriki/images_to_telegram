@@ -36,13 +36,12 @@ def find_system_files(path):
 	return any(extention in path for extention in system_files_extentions)
 
 
-def get_paths(folder):
+def get_files_paths(folder):
 	paths = []
 	for root, _, files in os.walk(Path(f"./{folder}")):
 		for name in files:
 			path = os.path.join(root, name)
-			if not find_system_files(path):
-				paths.append(path)
+			paths.append(path)
 	return paths
 
 
@@ -57,17 +56,15 @@ def publish_content(token, chat_id, path, message="Поехали!"):
 	try:
 		with open(Path(path), "rb") as file:
 			document = file.read()
-	except FileNotFoundError:
-		print(path)
-		print("Изображение не найдено.")
-		return
+	except:
+		raise
 	time_sleep = 0
 	while True:
 		try:
 			bot = telegram.Bot(token=token)
 			bot.send_message(chat_id=chat_id, text=message)
 			bot.send_document(document=document, chat_id=chat_id)
-			return path
+			return True
 		except telegram.error.NetworkError:
 			time.sleep(time_sleep)
 			time_sleep += 1
