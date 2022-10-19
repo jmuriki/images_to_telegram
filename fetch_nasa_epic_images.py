@@ -13,10 +13,7 @@ def get_dates(api_param):
 	url = "https://api.nasa.gov/EPIC/api/natural/all"
 	response = requests.get(url, api_param)
 	response.raise_for_status()
-	actual_dates = response.json()
-	date = actual_dates[0]["date"]
-	date_formatted = date.replace("-","/")
-	return date, date_formatted
+	return response.json()
 
 
 def get_archive(date, api_param):
@@ -35,7 +32,8 @@ def get_epic_url(date_formatted, image_name):
 
 def fetch_images(api_param, main_folder):
 	secondary_folder = create_folder_safely(main_folder, "nasa_epic")
-	date, date_formatted = get_dates(api_param)
+	date = get_dates(api_param)[0]["date"]
+	date_formatted = date.replace("-","/")
 	archive = get_archive(date, api_param)
 	for index, epic in enumerate(archive, start=1):
 		epic_url = get_epic_url(date_formatted, epic["image"])
