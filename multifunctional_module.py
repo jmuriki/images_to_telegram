@@ -52,7 +52,7 @@ def save_content(url, path, params=None):
 		file.write(response.content)
 
 
-def publish_content(token, chat_id, path, message="Поехали!"):
+def publish_content(token, chat_id, path):
 	try:
 		with open(Path(path), "rb") as file:
 			document = file.read()
@@ -62,8 +62,7 @@ def publish_content(token, chat_id, path, message="Поехали!"):
 	time_sleep = 0
 	while True:
 		try:
-			bot.send_message(chat_id=chat_id, text=message)
-			bot.send_document(document=document, chat_id=chat_id)
+			bot.send_document(document=document, chat_id=chat_id, caption="Поехали!")
 			return True
 		except telegram.error.NetworkError:
 			time.sleep(time_sleep)
