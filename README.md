@@ -31,7 +31,7 @@ pip3 install -r requirements.txt
 ```
 NASA_API_KEY=вместо этого текста вставьте ключ
 TELEGRAM_TOKEN=вместо этого текста вставьте токен
-CHAT_ID=@вместо этого текста вставьте @имя канала
+TELEGRAM_CHAT_ID=@вместо этого текста вставьте @имя канала
 ```
 
 Для получения API ключа NASA зарегистрируйтесь на https://api.nasa.gov .
@@ -83,6 +83,8 @@ python3 circular_publishing.py
 
 ### fetch_spacex_images.py
 
+Осуществляет скачивание фотографий последнего или конкретного запуска spaceX.
+
 Находясь в директории проекта, откройте с помощью python3 файл `fetch_spacex_images.py`
 
 ```
@@ -98,6 +100,8 @@ python3 fetch_spacex_images.py --id 5eb87d47ffd86e000604b38a
 
 ### fetch_nasa_apod_images.py
 
+Осуществляет скачивание избранного фото дня.
+
 Находясь в директории проекта, откройте с помощью python3 файл `fetch_nasa_apod_images.py`
 
 ```
@@ -106,6 +110,8 @@ python3 fetch_nasa_apod_images.py
 
 
 ### fetch_nasa_epic_images.py
+
+Осуществляет скачивание последней серии фотографий Земли.
 
 Находясь в директории проекта, откройте с помощью python3 файл `fetch_nasa_epic_images.py`
 
