@@ -10,19 +10,12 @@ from multifunctional_module import find_system_files
 from multifunctional_module import publish_content
 
 
-def define_publication_interval(interval_hours):
-	try:
-		return float(interval_hours) * 3600
-	except:
-		return 4 * 3600
-
-
 def main():
 	load_dotenv()
 	token = os.environ["TELEGRAM_TOKEN"]
 	chat_id = os.environ["TELEGRAM_CHAT_ID"]
-	interval = os.getenv("PUBLICATION_INTERVAL", default="")
-	duration_sec = define_publication_interval(interval)
+	interval = os.getenv("PUBLICATION_INTERVAL", default=4)
+	duration_sec = float(interval) * 3600
 	images_folder = create_folder_safely()
 	paths = get_files_paths(images_folder)
 	while paths:
