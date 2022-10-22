@@ -1,6 +1,4 @@
 import requests
-import json
-import argparse
 
 from multifunctional_module import create_parser
 from multifunctional_module import create_folder_safely
