@@ -58,10 +58,10 @@ def publish_content(token, chat_id, path, message="Поехали!"):
 			document = file.read()
 	except:
 		raise
+	bot = telegram.Bot(token=token)
 	time_sleep = 0
 	while True:
 		try:
-			bot = telegram.Bot(token=token)
 			bot.send_message(chat_id=chat_id, text=message)
 			bot.send_document(document=document, chat_id=chat_id)
 			return True
