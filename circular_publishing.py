@@ -17,12 +17,11 @@ def main():
 	interval = os.getenv("PUBLICATION_INTERVAL", default=4)
 	duration_sec = float(interval) * 3600
 	images_folder = create_folder_safely()
-	paths = get_files_paths(images_folder)
+	paths = [path for path in get_files_paths(images_folder) if not find_system_files(path)]
 	while paths:
 		for path in paths:
-			if not find_system_files(path):
-				publish_content(token, chat_id, path)
-				time.sleep(duration_sec)
+			publish_content(token, chat_id, path)
+			time.sleep(duration_sec)
 		random.shuffle(paths)
 	print("Изображений не найдено.")
 
