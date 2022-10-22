@@ -22,6 +22,7 @@ def main():
 	try:
 		publish_content(token, chat_id, path)
 	except IsADirectoryError:
+		print("Изображений не найдено.")
 		return
 
 if __name__ == "__main__":

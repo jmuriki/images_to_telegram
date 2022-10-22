@@ -56,7 +56,7 @@ def publish_content(token, chat_id, path):
 	try:
 		with open(Path(path), "rb") as file:
 			document = file.read()
-	except:
+	except IsADirectoryError:
 		raise
 	bot = telegram.Bot(token=token)
 	time_sleep = 0
