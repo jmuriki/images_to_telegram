@@ -1,5 +1,6 @@
 import os
 import requests
+import datetime
 
 from dotenv import load_dotenv
 
@@ -15,6 +16,11 @@ def get_dates(api_param):
 	return response.json()
 
 
+def format_date(iso_date):
+	date = datetime.datetime.fromisoformat(iso_date).date()
+	return date.strftime("%Y/%m/%d")
+
+
 def get_archive(date, api_param):
 	url = f"https://api.nasa.gov/EPIC/api/natural/date/{date}"
 	response = requests.get(url, api_param)
@@ -23,23 +29,23 @@ def get_archive(date, api_param):
 	return archive
 
 
-def get_epic_url(date_formatted, image_name):
+def get_epic_url(formatted_date, image_name):
 	url = "https://api.nasa.gov/EPIC/archive/natural/"
-	epic_url = f"{url}{date_formatted}/png/{image_name}.png"
+	epic_url = f"{url}{formatted_date}/png/{image_name}.png"
 	return epic_url
 
 
 def fetch_images(api_param, main_folder):
 	secondary_folder = create_folder_safely(main_folder, "nasa_epic")
-	date = get_dates(api_param)[0]["date"]
-	date_formatted = date.replace("-","/")
-	archive = get_archive(date, api_param)
+	iso_date = get_dates(api_param)[0]["date"]
+	formatted_date = format_date(iso_date)
+	archive = get_archive(iso_date, api_param)
 	for index, epic in enumerate(archive, start=1):
-		epic_url = get_epic_url(date_formatted, epic["image"])
+		epic_url = get_epic_url(formatted_date, epic["image"])
 		filepath = compose_filepath(
 			epic_url,
 			main_folder,
-			date,
+			iso_date,
 			secondary_folder,
 			index
 		)
