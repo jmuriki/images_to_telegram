@@ -19,11 +19,8 @@ def main():
 	paths = [path for path in get_files_paths(images_folder) if not find_system_files(path)]
 	if not path and paths:
 		path = random.choice(paths)
-	try:
+	if path:
 		publish_content(token, chat_id, path)
-	except IsADirectoryError:
-		print("Изображений не найдено.")
-		return
 
 if __name__ == "__main__":
 	main()

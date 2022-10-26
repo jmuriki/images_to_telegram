@@ -23,7 +23,6 @@ def main():
 			publish_content(token, chat_id, path)
 			time.sleep(duration_sec)
 		random.shuffle(paths)
-	print("Изображений не найдено.")
 
 
 if __name__ == "__main__":
