@@ -33,7 +33,12 @@ def fetch_images(archive, main_folder):
     for apod in archive:
         apod_url = apod.get("hdurl")
         if apod_url:
-            filepath = compose_filepath(apod_url, main_folder, apod["date"], secondary_folder)
+            filepath = compose_filepath(
+                apod_url,
+                main_folder,
+                apod["date"],
+                secondary_folder,
+            )
             save_content(apod_url, filepath)
 
 

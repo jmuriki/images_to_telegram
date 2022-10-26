@@ -24,7 +24,13 @@ def parse_response(spacex_response):
 def fetch_images(main_folder, links, date):
     secondary_folder = create_folder_safely(main_folder, "space_x")
     for link_number, link in enumerate(links, start=1):
-        filepath = compose_filepath(link, main_folder, date, secondary_folder, link_number)
+        filepath = compose_filepath(
+            link,
+            main_folder,
+            date,
+            secondary_folder,
+            link_number,
+        )
         save_content(link, filepath)
 
 

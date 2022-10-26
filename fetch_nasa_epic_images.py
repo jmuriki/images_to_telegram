@@ -41,7 +41,13 @@ def fetch_images(api_param, main_folder):
     archive = get_archive(iso_date, api_param)
     for index, epic in enumerate(archive, start=1):
         epic_url = get_epic_url(formatted_date, epic["image"])
-        filepath = compose_filepath(epic_url, main_folder, iso_date, secondary_folder, index)
+        filepath = compose_filepath(
+            epic_url,
+            main_folder,
+            iso_date,
+            secondary_folder,
+            index,
+        )
         save_content(epic_url, filepath, api_param)
 
 
