@@ -24,16 +24,16 @@ def compose_filepath(url, main_folder, date, secondary_folder="", index=""):
 	url_part = urlparse(url).path
 	unquoted_url_part = unquote(url_part)
 	filename = os.path.split(unquoted_url_part)[-1]
-	extention = os.path.splitext(filename)[-1]
+	extension = os.path.splitext(filename)[-1]
 	if index:
 		index = f"_{index}"
-	filename = f"{secondary_folder}_{date}{index}{extention}"
+	filename = f"{secondary_folder}_{date}{index}{extension}"
 	return f"./{main_folder}/{secondary_folder}/{filename}"
 
 
 def find_system_files(path):
-	system_files_extentions = [".DS_Store"]
-	return any(extention in path for extention in system_files_extentions)
+	system_files_extensions = [".DS_Store"]
+	return any(extension in path for extension in system_files_extensions)
 
 
 def get_files_paths(folder):
