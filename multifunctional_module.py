@@ -53,11 +53,8 @@ def save_content(url, path, params=None):
 
 
 def publish_content(token, chat_id, path):
-	try:
-		with open(Path(path), "rb") as file:
-			document = file.read()
-	except IsADirectoryError:
-		raise
+	with open(Path(path), "rb") as file:
+		document = file.read()
 	bot = telegram.Bot(token=token)
 	time_sleep = 0
 	while True:
