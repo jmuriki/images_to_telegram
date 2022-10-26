@@ -3,7 +3,6 @@ import requests
 import datetime
 
 from dotenv import load_dotenv
-
 from multifunctional_module import create_folder_safely
 from multifunctional_module import compose_filepath
 from multifunctional_module import save_content

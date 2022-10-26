@@ -2,7 +2,6 @@ import os
 import random
 
 from dotenv import load_dotenv
-
 from multifunctional_module import create_parser
 from multifunctional_module import create_folder_safely
 from multifunctional_module import get_files_paths
@@ -15,8 +14,8 @@ def main():
 	token = os.environ["TELEGRAM_TOKEN"]
 	chat_id = os.environ["TELEGRAM_CHAT_ID"]
 	path = create_parser("--path").parse_args().path
-	images_folder = create_folder_safely()
-	paths = [path for path in get_files_paths(images_folder) if not find_system_files(path)]
+	folder = create_folder_safely()
+	paths = [p for p in get_files_paths(folder) if not find_system_files(p)]
 	if not path and paths:
 		path = random.choice(paths)
 	if path:
