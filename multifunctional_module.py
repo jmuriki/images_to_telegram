@@ -48,7 +48,7 @@ def get_files_paths(folder):
 def save_content(url, path, params=None):
 	response = requests.get(url, params)
 	response.raise_for_status()
-	with open(Path(f"{path}"), "wb") as file:
+	with open(Path(path), "wb") as file:
 		file.write(response.content)
 
 
