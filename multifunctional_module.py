@@ -59,7 +59,11 @@ def publish_content(token, chat_id, path):
 	time_sleep = 0
 	while True:
 		try:
-			bot.send_document(document=document, chat_id=chat_id, caption="Поехали!")
+			bot.send_document(
+				document=document, 
+				chat_id=chat_id, 
+				caption="Поехали!",
+				)
 			return True
 		except telegram.error.NetworkError:
 			time.sleep(time_sleep)
