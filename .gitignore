@@ -137,4 +137,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# This project
 .DS_Store
+images/
